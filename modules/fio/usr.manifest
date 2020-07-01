@@ -1,0 +1,17 @@
+[manifest]
+/usr/fio: ${MODULE_DIR}/fio/fio
+/tests/**: ${MODULE_DIR}/tests/**
+
+# Taken care of by module.py
+#/&/data/local-create-0-verify.state: ${MODULE_DIR}/&
+#/&/data/local-create-1-verify.state: ${MODULE_DIR}/&
+#/&/data/verify.0.0: ${MODULE_DIR}/&
+#/&/data/verify.1.0: ${MODULE_DIR}/&
+
+#/&/data/single.0.0: ${MODULE_DIR}/&
+
+#/data/many/**: ${MODULE_DIR}/data/many/**
+
+# For ramfs, since there is no way to create an empty directory using the python
+# API (FileMap) and fio requires --directory to exist before creating the files
+/data/many: ${MODULE_DIR}

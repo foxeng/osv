@@ -1,0 +1,7 @@
+[global]
+include single-common.fio
+size=1GiB  # TODO: Scale up
+
+[create]
+stats=0 # Disable stats output to avoid clutter
+create_only=1

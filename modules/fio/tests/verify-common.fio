@@ -1,0 +1,7 @@
+kb_base=1000    # give proper semantics to units
+thread          # use threads, not processes
+
+bs=4KiB
+verify=crc32c
+filename_format=verify.$jobnum.$filenum
+numjobs=2   # TODO: Play with this

@@ -1,0 +1,8 @@
+kb_base=1000    # give proper semantics to units
+thread          # use threads, not processes
+group_reporting
+
+bs=4KiB
+direct=0    # direct io is only applicable to Linux guest
+filename=single.0.0
+numjobs=1   # TODO: Play with this

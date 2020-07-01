@@ -1,0 +1,7 @@
+[global]
+include many-common.fio
+# opendir=/home/fotis/workspace/ram/many # host
+# opendir=/mnt/many # guest
+
+[serial]
+rw=read

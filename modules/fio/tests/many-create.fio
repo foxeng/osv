@@ -1,0 +1,13 @@
+[global]
+include many-common.fio
+numjobs=1   # Create only a single batch of files
+
+[create]
+stats=0 # Disable stats output to avoid clutter
+create_only=1
+
+#directory=many    # NOTE: Should already exist
+filename_format=many.$jobnum.$filenum
+allrandrepeat=1 # Since we allow a variable file size below, make it reproducible across runs
+nrfiles=10   # TODO: Scale up
+filesize=80MiB-100MiB # TODO: Scale up

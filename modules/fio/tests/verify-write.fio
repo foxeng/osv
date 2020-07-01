@@ -1,0 +1,11 @@
+[global]
+include verify-common.fio
+size=1GiB  # TODO: Scale up
+
+[create]
+stats=0 # Disable stats output to avoid clutter
+rw=write
+
+# Can be used instead of a separate read-verify phase. Note that this will
+# update the state files and cannot be used with --readonly.
+#verify_only

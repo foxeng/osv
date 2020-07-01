@@ -1,0 +1,19 @@
+[global]
+include verify-common.fio
+
+# Each thread reading its own file
+[serial]
+rw=read
+
+[random]
+rw=randread
+
+[global]
+filename=verify.0.0	# NOTE: This relies on the common filename_format
+
+# All threads reading a common file
+[shared-serial]
+rw=read
+
+[shared-random]
+rw=randread

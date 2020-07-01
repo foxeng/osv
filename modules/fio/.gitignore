@@ -1,0 +1,13 @@
+*
+
+!.gitignore
+!README.md
+!Makefile
+!usr.manifest
+!*.py
+!*.sh
+!*.awk
+!tests/
+!tests/**
+!results/
+!results/**
