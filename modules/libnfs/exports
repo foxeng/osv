@@ -1,0 +1,18 @@
+# Reference for below options (exports(5)):
+# insecure: "This option requires that requests not using gss originate on an
+#   Internet port less than IPPORT_RESERVED (1024). This option is on by
+#   default. To turn it off, specify insecure."
+# rw: Read-write. Unfortunately, we get an EPERM on open() when using the
+# default (ro).
+# sync: Synchronous, the default, just being explicit.
+# subtree_check: Enable subtree checks, the default, just being explicit.
+# fsid=0: "As not all filesystems are stored on devices, and not all filesystems
+#   have UUIDs, it is sometimes necessary to explicitly tell NFS how to identify
+#   a filesystem. This is done with the fsid= option.", so, may be necessary if
+#   the export is e.g. ramfs.
+#   "For NFSv4, there is a distinguished filesystem which is the root of all
+#   exported filesystems. This is specified with fsid=root or fsid=0 both of
+#   which mean exactly the same thing."
+# no_root_squash: Don't map root to the nobody user (i.e. map client root to
+#   server root).
+/home/fotis/workspace/ram/guest   -insecure,rw,sync,subtree_check,fsid=0,no_root_squash 127.0.0.1 192.168.0.0/16
