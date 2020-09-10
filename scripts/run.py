@@ -208,7 +208,7 @@ def start_osv_qemu(options):
             if options.tap:
                 args += ["-netdev", "tap,id=hn%d,ifname=%s,script=no,downscript=no" % (idx, options.tap)]
             elif options.vhost:
-                args += ["-netdev", "tap,id=hn%d,script=%s,vhost=on" % (idx, os.path.join(osv_base, "scripts/qemu-ifup.sh"))]
+                args += ["-netdev", "tap,id=hn%d,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on" % (idx)]
             else:
                 for bridge_helper_dir in ['/usr/libexec', '/usr/lib/qemu']:
                     bridge_helper = bridge_helper_dir + '/qemu-bridge-helper'
