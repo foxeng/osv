@@ -181,9 +181,10 @@ def start_osv_qemu(options):
         "-drive", "file=%s,if=none,id=hd1" % (options.cloud_init_image)]
 
     if options.virtio_fs_tag:
+        dax = (",cache-size=%s" % options.virtio_fs_dax) if options.virtio_fs_dax != "0" else ""
         args += [
         "-chardev", "socket,id=char0,path=/tmp/vhostqemu",
-        "-device", "vhost-user-fs-pci,queue-size=1024,chardev=char0,tag=%s" % options.virtio_fs_tag,
+        "-device", "vhost-user-fs-pci,queue-size=1024,chardev=char0,tag={0}{1}".format(options.virtio_fs_tag, dax),
         "-object", "memory-backend-file,id=mem,size=%s,mem-path=/dev/shm,share=on" % options.memsize,
         "-numa", "node,memdev=mem"]
 
@@ -263,17 +264,25 @@ def start_osv_qemu(options):
     for a in options.pass_args or []:
         args += a.split()
 
+    virtiofsd = None
     if options.virtio_fs_dir:
-        try:
-            # Normally virtiofsd exits by itself but in future we should probably kill it if it did not
-            subprocess.Popen(["virtiofsd", "--socket-path=/tmp/vhostqemu", "-o",
-                              "source=%s" % options.virtio_fs_dir, "-o", "cache=always"], stdout=devnull, stderr=devnull)
-        except OSError as e:
-            if e.errno == errno.ENOENT:
-                print("virtiofsd binary not found. Please install the qemu-system-x86 package that comes with it (>= 4.2) and is in path.")
-            else:
-                print("OS error({0}): \"{1}\" while running virtiofsd {2}".
-                    format(e.errno, e.strerror, " ".join(args)))
+        virtiofsd_args = ["virtiofsd", "--socket-path=/tmp/vhostqemu", "-o",
+            "source={0}".format(options.virtio_fs_dir), "-o", "cache=none",
+            "--thread-pool-size={}".format(1)]  # More stable, if not better perf than the default (64)
+        if options.dry_run:
+            print(format_args(virtiofsd_args))
+        else:
+            try:
+                virtiofsd = subprocess.Popen(virtiofsd_args, stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL)
+            except OSError as e:
+                if e.errno == errno.ENOENT:
+                    print("virtiofsd binary not found. Please install the qemu-system-x86 package "
+                        "that comes with it (>= 4.2) and is in path.", file=sys.stderr)
+                else:
+                    print("OS error({0}): \"{1}\" while running virtiofsd {2}".
+                        format(e.errno, e.strerror, " ".join(args)), file=sys.stderr)
+                return
 
     try:
         # Save the current settings of the stty
@@ -293,12 +302,20 @@ def start_osv_qemu(options):
                 sys.exit("qemu failed.")
     except OSError as e:
         if e.errno == errno.ENOENT:
-            print("'%s' binary not found. Please install the qemu-system-x86 package." % qemu_path)
+            print("'%s' binary not found. Please install the qemu-system-x86 package." % qemu_path,
+                file=sys.stderr)
         else:
             print("OS error({0}): \"{1}\" while running qemu-system-{2} {3}".
-                format(e.errno, e.strerror, options.arch, " ".join(args)))
+                format(e.errno, e.strerror, options.arch, " ".join(args)), file=sys.stderr)
     finally:
         cleanups()
+        if virtiofsd is not None:
+            if virtiofsd.poll() is None:
+                virtiofsd.terminate()
+                try:
+                    virtiofsd.wait(5)
+                except subprocess.TimeoutExpired:
+                    virtiofsd.kill()
 
 def start_osv_xen(options):
     if options.hypervisor == "xen":
@@ -588,6 +605,8 @@ if __name__ == "__main__":
                         help="virtio-fs device tag")
     parser.add_argument("--virtio-fs-dir", action="store",
                         help="path to the directory exposed via virtio-fs mount")
+    parser.add_argument("--virtio-fs-dax", action="store", default="0",
+                        help="DAX window size for virtio-fs device (disabled if 0)")
     parser.add_argument("--mount-fs", default=[], action="append",
                         help="extra mounts (forwarded to respective kernel command line option)")
     parser.add_argument("--ip", default=[], action="append",
