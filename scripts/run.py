@@ -119,8 +119,11 @@ class MemUsage:
 
 def record_memu(p, t):
     # TODO OPT: Add cancellation through a threading.Event, to allow monitoring long-running procs
-    while p.is_running():
-        tmp = p.memory_full_info()
+    while True:
+        try:
+            tmp = p.memory_full_info()
+        except psutil.NoSuchProcess:
+            return
         t.rss = max(t.rss, tmp.rss)
         t.uss = max(t.uss, tmp.uss)
 
