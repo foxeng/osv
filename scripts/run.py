@@ -4,6 +4,9 @@ import subprocess
 import sys
 import argparse
 import os
+import signal
+import time
+import psutil
 import tempfile
 import errno
 import re
@@ -266,6 +269,7 @@ def start_osv_qemu(options):
 
     virtiofsd = None
     if options.virtio_fs_dir:
+        virtiofsd_env = os.environ.copy()
         virtiofsd_args = ["virtiofsd", "--socket-path=/tmp/vhostqemu", "-o",
             "source={0}".format(options.virtio_fs_dir), "-o", "cache=none",
             "--thread-pool-size={}".format(1)]  # More stable, if not better perf than the default (64)
@@ -273,8 +277,16 @@ def start_osv_qemu(options):
             print(format_args(virtiofsd_args))
         else:
             try:
-                virtiofsd = subprocess.Popen(virtiofsd_args, stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL)
+                if "virtiofsd" in options.perf:
+                    # NOTE: It would be nice to use "-x" to get parseable output, but it seems to be
+                    # broken for CPU utilization (always rounds down to int, i.e. usually prints 0)
+                    virtiofsd_args = ["perf", "stat", "--inherit", "-e", "task-clock", "--"] \
+                        + virtiofsd_args
+                    # Make perf use the same numeric format as OSv
+                    virtiofsd_env['LC_NUMERIC'] = 'C'
+                virtiofsd = psutil.Popen(virtiofsd_args, stdout=subprocess.DEVNULL,
+                    stderr=subprocess.PIPE if "virtiofsd" in options.perf else subprocess.DEVNULL,
+                    text=True, env=virtiofsd_env)
             except OSError as e:
                 if e.errno == errno.ENOENT:
                     print("virtiofsd binary not found. Please install the qemu-system-x86 package "
@@ -284,37 +296,163 @@ def start_osv_qemu(options):
                         format(e.errno, e.strerror, " ".join(args)), file=sys.stderr)
                 return
 
+    qemu_env = os.environ.copy()
+    qemu_env['OSV_BRIDGE'] = options.bridge
+    qemu_path = options.qemu_path or ('qemu-system-%s' % options.arch)
+    cmdline = [qemu_path] + args
+    if options.dry_run:
+        print(format_args(cmdline))
+        return
+
     try:
         # Save the current settings of the stty
         stty_save()
 
         # Launch qemu
-        qemu_env = os.environ.copy()
-
-        qemu_env['OSV_BRIDGE'] = options.bridge
-        qemu_path = options.qemu_path or ('qemu-system-%s' % options.arch)
-        cmdline = [qemu_path] + args
-        if options.dry_run:
-            print(format_args(cmdline))
-        else:
-            ret = subprocess.call(cmdline, env=qemu_env)
-            if ret != 0:
-                sys.exit("qemu failed.")
+        perf_nfs = None
+        perf_vhost = None
+        qemu = None
+        qemu_act = None
+        if "qemu" in options.perf:
+            cmdline = ["perf", "stat", "--inherit", "-e", "task-clock", "--"] + cmdline
+            qemu_env['LC_NUMERIC'] = 'C'
+        qemu = psutil.Popen(cmdline, env=qemu_env)
     except OSError as e:
         if e.errno == errno.ENOENT:
-            print("'%s' binary not found. Please install the qemu-system-x86 package." % qemu_path,
-                file=sys.stderr)
+            print("{} binary not found. Please install the qemu-system-x86 package.".
+                format(qemu_path), file=sys.stderr)
         else:
             print("OS error({0}): \"{1}\" while running qemu-system-{2} {3}".
                 format(e.errno, e.strerror, options.arch, " ".join(args)), file=sys.stderr)
+    else:
+        if "qemu" in options.perf:
+            # Get the actual qemu process (wrapped by perf)
+            perf_children = qemu.children()
+            pcl = len(perf_children)
+            if pcl == 0:
+                # Wait once for perf to launch qemu
+                print("run.py: INFO: waiting for perf to launch qemu", file=sys.stderr)
+                time.sleep(0.05)
+                perf_children = qemu.children()
+                pcl = len(perf_children)
+
+            if pcl == 0:
+                # Perf has yet to launch qemu, warn and continue without it
+                print("run.py: WARNING: missing vhost kernel thread from perf monitoring (missing "
+                    "qemu pid)", file=sys.stderr)
+            else:
+                qemu_act = perf_children[0] # actual qemu process
+                if pcl > 1:
+                    print("run.py: WARNING: perf has {} children, using the first one (pid {})"
+                        "arbitrarily as qemu".format(pcl, qemu_act.pid), file=sys.stderr)
+
+                # Measure vhost resource usage
+                vhost_pid = None    # vhost kernel thread for qemu (named vhost-$QEMU_PID)
+                for p in psutil.process_iter(["name"]):
+                    if p.info["name"] == "vhost-{}".format(qemu_act.pid):
+                        vhost_pid = p.pid
+                if vhost_pid is None:
+                    # Wait once for vhost kernel thread to launch
+                    print("run.py: INFO: waiting for vhost kernel thread to launch",
+                        file=sys.stderr)
+                    time.sleep(0.05)
+                    for p in psutil.process_iter(["name"]):
+                        if p.info["name"] == "vhost-{}".format(qemu_act.pid):
+                            vhost_pid = p.pid
+                if vhost_pid is None:
+                    # Vhost kernel thread has not launched yet, warn and continue without it
+                    print("run.py: WARNING: missing vhost-$PID from perf monitoring (kernel thread "
+                        "not launched yet)", file=sys.stderr)
+                else:
+                    perf_vhost_env = os.environ.copy()
+                    perf_vhost_env['LC_NUMERIC'] = 'C'
+                    perf_vhost_args = ["perf", "stat", "-e", "task-clock", "-p", str(vhost_pid)]
+                    try:
+                        perf_vhost = subprocess.Popen(perf_vhost_args, stdout=subprocess.DEVNULL,
+                            stderr=subprocess.PIPE, text=True, env=perf_vhost_env)
+                    except OSError as e:
+                        if e.errno == errno.ENOENT:
+                            print("perf binary not found. Please install the perf package.",
+                                file=sys.stderr)
+                        else:
+                            print("OS error({}): \"{}\" while running {}".format(e.errno,
+                                e.strerror, " ".join(perf_vhost_args)), file=sys.stderr)
+
+        if "nfs" in options.perf:
+            nfs_pids = []   # nfsd kernel threads
+            for p in psutil.process_iter(["name"]):
+                if p.info["name"] == "nfsd":
+                    nfs_pids.append(p.pid)
+
+            # The nfsd threads should already be running
+            if nfs_pids == []:
+                print("run.py: WARNING: missing nfs from perf monitoring (no kernel threads found)",
+                    file=sys.stderr)
+            else:
+                perf_nfs_env = os.environ.copy()
+                perf_nfs_env['LC_NUMERIC'] = 'C'
+                perf_nfs_args = ["perf", "stat", "-e", "task-clock", "-p",
+                    ','.join(str(p) for p in nfs_pids)]
+                try:
+                    perf_nfs = subprocess.Popen(perf_nfs_args, stdout=subprocess.DEVNULL,
+                        stderr=subprocess.PIPE, text=True, env=perf_nfs_env)
+                except OSError as e:
+                    if e.errno == errno.ENOENT:
+                        print("perf binary not found. Please install the perf package.",
+                            file=sys.stderr)
+                    else:
+                        print("OS error({}): \"{}\" while running {}".format(e.errno, e.strerror,
+                            " ".join(perf_nfs_args)), file=sys.stderr)
     finally:
+        # Wait for qemu
+        if qemu is not None:
+            qemu.wait()
+            # NOTE: perf stats should be printed by now
+            if qemu.returncode != 0:
+                print("qemu failed.", file=sys.stderr)
+
+        # Clean up nfs perf (not expected to terminate)
+        if perf_nfs is not None:
+            # Normally, when running with '-p', perf prints and exits with SIGINT
+            perf_nfs.send_signal(signal.SIGINT)
+            try:
+                _, perf_nfs_err = perf_nfs.communicate(timeout=5)
+            except subprocess.TimeoutExpired:
+                print("run.py: WARNING: killing nfs perf", file=sys.stderr)
+                perf_nfs.kill()
+                _, perf_nfs_err = perf_nfs.communicate()
+            # TODO OPT: Annotate as nfs perf?
+            print(perf_nfs_err, file=sys.stderr)
+
+        # Clean up vhost perf (should have terminated)
+        if perf_vhost is not None:
+            try:
+                _, perf_vhost_err = perf_vhost.communicate(timeout=5)
+            except subprocess.TimeoutExpired:
+                print("run.py: WARNING: killing vhost perf", file=sys.stderr)
+                perf_vhost.kill()
+                _, perf_vhost_err = perf_vhost.communicate()
+            # TODO OPT: Annotate as vhost perf?
+            print(perf_vhost_err, file=sys.stderr)
+
+        # Restore stty settings
         cleanups()
+
+        # Clean up virtiofsd (should have terminated if qemu exited gracefully)
         if virtiofsd is not None:
-            if virtiofsd.poll() is None:
+            if "virtiofsd" in options.perf:
+                try:
+                    _, virtiofsd_err = virtiofsd.communicate(timeout=5)
+                except psutil.TimeoutExpired:
+                    print("run.py: WARNING: killing virtiofsd perf", file=sys.stderr)
+                    virtiofsd.kill()
+                    _, virtiofsd_err = virtiofsd.communicate()
+                print(virtiofsd_err, file=sys.stderr)
+            elif virtiofsd.poll() is None:
                 virtiofsd.terminate()
                 try:
                     virtiofsd.wait(5)
-                except subprocess.TimeoutExpired:
+                except psutil.TimeoutExpired:
                     virtiofsd.kill()
 
 def start_osv_xen(options):
@@ -613,6 +751,8 @@ if __name__ == "__main__":
                         help="static ip addresses (forwarded to respective kernel command line option)")
     parser.add_argument("--bootchart", action="store_true",
                         help="bootchart mode (forwarded to respective kernel command line option")
+    parser.add_argument("--perf", action="append", default=[], choices=["qemu", "virtiofsd", "nfs"],
+                        help="wrap subcommands with 'perf stat'")
     cmdargs = parser.parse_args()
 
     cmdargs.opt_path = "debug" if cmdargs.debug else "release" if cmdargs.release else "last"
