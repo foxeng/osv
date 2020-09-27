@@ -436,6 +436,7 @@ void* do_main_thread(void *_main_args)
             // TODO: Avoid the hack of using pivot_rootfs() just for mounting
             // the fstab entries.
             pivot_rootfs("/");
+            boot_time.event("RAMFS mounted");
         } else if (opt_rootfs.compare("virtiofs") == 0) {
             auto error = mount_virtiofs_rootfs(opt_pivot);
             if (error) {
