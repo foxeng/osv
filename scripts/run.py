@@ -406,7 +406,29 @@ def start_osv_qemu(options):
     finally:
         # Wait for qemu
         if qemu is not None:
-            qemu.wait()
+            if options.qemu_timeout > 0:
+                try:
+                    # NOTE: This is not precise wrt QEMU's actual run time, but
+                    # we don't need precision (just a way to kill qemu when
+                    # running server apps).
+                    qemu.wait(options.qemu_timeout)
+                except psutil.TimeoutExpired:   # psutil.Popen throws its own TimeoutExpired...
+                    if qemu_act is not None:
+                        # Terminate the actual qemu process to collect perf's
+                        # report (no way to gracefully handle it by signaling
+                        # perf)
+                        qemu_act.terminate()
+                    else:
+                        if "qemu" in options.perf:
+                            print("run.py: WARNING: terminating perf instead of actual qemu",
+                                file=sys.stderr)
+                        qemu.terminate()
+                    try:
+                        qemu.wait(5)
+                    except psutil.TimeoutExpired:
+                        qemu.kill()
+            else:
+                qemu.wait()
             # NOTE: perf stats should be printed by now
             if qemu.returncode != 0:
                 print("qemu failed.", file=sys.stderr)
@@ -753,6 +775,8 @@ if __name__ == "__main__":
                         help="bootchart mode (forwarded to respective kernel command line option")
     parser.add_argument("--perf", action="append", default=[], choices=["qemu", "virtiofsd", "nfs"],
                         help="wrap subcommands with 'perf stat'")
+    parser.add_argument("--qemu-timeout", action="store", default=0, type=float,
+                        help="terminate qemu after this time (in seconds)")
     cmdargs = parser.parse_args()
 
     cmdargs.opt_path = "debug" if cmdargs.debug else "release" if cmdargs.release else "last"
