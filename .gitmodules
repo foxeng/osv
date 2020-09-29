@@ -4,8 +4,9 @@
 	ignore = dirty
 [submodule "apps"]
 	path = apps
-	url = ../../cloudius-systems/osv-apps
+	url = https://github.com/foxeng/osv-apps.git
 	ignore = dirty
+	branch = virtiofs-tests
 [submodule "modules/httpserver/swagger-ui"]
 	path = modules/httpserver-html5-gui/swagger-ui
 	url = ../../cloudius-systems/swagger-ui.git
