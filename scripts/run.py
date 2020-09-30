@@ -309,6 +309,7 @@ def start_osv_qemu(options):
         stty_save()
 
         # Launch qemu
+        client = None
         perf_nfs = None
         perf_vhost = None
         qemu = None
@@ -403,30 +404,64 @@ def start_osv_qemu(options):
                     else:
                         print("OS error({}): \"{}\" while running {}".format(e.errno, e.strerror,
                             " ".join(perf_nfs_args)), file=sys.stderr)
+
+        if options.client_path is not None:
+            # TODO OPT: Measure resource usage with perf
+            if options.client_delay > 0:
+                time.sleep(options.client_delay)
+
+            try:
+                client = subprocess.Popen(options.client_path, stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE, text=True)
+            except OSError as e:
+                if e.errno == errno.ENOENT:
+                    print("client executable \"{}\" not found".format(options.client_path),
+                        file=sys.stderr)
+                else:
+                    print("OS error({}): \"{}\" while running {}".format(e.errno, e.strerror,
+                        options.clien_path), file=sys.stderr)
     finally:
         # Wait for qemu
         if qemu is not None:
-            if options.qemu_timeout > 0:
+            def kill_qemu():
+                if qemu_act is not None:
+                    # Terminate the actual qemu process to collect perf's
+                    # report (no way to gracefully handle it by signaling
+                    # perf)
+                    qemu_act.terminate()
+                else:
+                    if "qemu" in options.perf:
+                        print("run.py: WARNING: terminating perf instead of actual qemu",
+                            file=sys.stderr)
+                    qemu.terminate()
+                try:
+                    qemu.wait(5)
+                except psutil.TimeoutExpired:
+                    qemu.kill()
+
+            if client is not None:
+                if options.qemu_timeout > 0:
+                    # NOTE: Ideally, if both client and timeout are specified,
+                    # we should terminate when (whichever happens first):
+                    # - client exits
+                    # - timeout expires
+                    # - qemu exits
+                    # Let's not mess with threads and whatnot just for this,
+                    # assume timeout and client are mutually exclusive.
+                    print("run.py: WARNING: ignoring --qemu-timeout due to --client-path",
+                        file=sys.stderr)
+                client_out, client_err = client.communicate()
+                kill_qemu()
+                print(client_out)
+                print(client_err, file=sys.stderr)
+            elif options.qemu_timeout > 0:
                 try:
                     # NOTE: This is not precise wrt QEMU's actual run time, but
                     # we don't need precision (just a way to kill qemu when
                     # running server apps).
                     qemu.wait(options.qemu_timeout)
                 except psutil.TimeoutExpired:   # psutil.Popen throws its own TimeoutExpired...
-                    if qemu_act is not None:
-                        # Terminate the actual qemu process to collect perf's
-                        # report (no way to gracefully handle it by signaling
-                        # perf)
-                        qemu_act.terminate()
-                    else:
-                        if "qemu" in options.perf:
-                            print("run.py: WARNING: terminating perf instead of actual qemu",
-                                file=sys.stderr)
-                        qemu.terminate()
-                    try:
-                        qemu.wait(5)
-                    except psutil.TimeoutExpired:
-                        qemu.kill()
+                    kill_qemu()
             else:
                 qemu.wait()
             # NOTE: perf stats should be printed by now
@@ -443,7 +478,8 @@ def start_osv_qemu(options):
                 print("run.py: WARNING: killing nfs perf", file=sys.stderr)
                 perf_nfs.kill()
                 _, perf_nfs_err = perf_nfs.communicate()
-            # TODO OPT: Annotate as nfs perf?
+            # To distinguish from vhost perf stats
+            print("perf stat nfs:", file=sys.stderr)
             print(perf_nfs_err, file=sys.stderr)
 
         # Clean up vhost perf (should have terminated)
@@ -454,7 +490,8 @@ def start_osv_qemu(options):
                 print("run.py: WARNING: killing vhost perf", file=sys.stderr)
                 perf_vhost.kill()
                 _, perf_vhost_err = perf_vhost.communicate()
-            # TODO OPT: Annotate as vhost perf?
+            # To distinguish from nfs perf stats
+            print("perf stat vhost:", file=sys.stderr)
             print(perf_vhost_err, file=sys.stderr)
 
         # Restore stty settings
@@ -777,6 +814,10 @@ if __name__ == "__main__":
                         help="wrap subcommands with 'perf stat'")
     parser.add_argument("--qemu-timeout", action="store", default=0, type=float,
                         help="terminate qemu after this time (in seconds)")
+    parser.add_argument("--client-path", action="store",
+                        help="path to client executable to run in parallel and kill qemu when it exits")
+    parser.add_argument("--client-delay", action="store", default=0, type=float,
+                        help="seconds to wait before launching client")
     cmdargs = parser.parse_args()
 
     cmdargs.opt_path = "debug" if cmdargs.debug else "release" if cmdargs.release else "last"
