@@ -267,6 +267,7 @@ def start_osv_qemu(options):
     for a in options.pass_args or []:
         args += a.split()
 
+    affinity = sorted(os.sched_getaffinity(0))  # CPUs available to us
     virtiofsd = None
     if options.virtio_fs_dir:
         virtiofsd_env = os.environ.copy()
@@ -284,9 +285,22 @@ def start_osv_qemu(options):
                         + virtiofsd_args
                     # Make perf use the same numeric format as OSv
                     virtiofsd_env['LC_NUMERIC'] = 'C'
+                if options.isolcpus:
+                    # Pin to first N - options.vcpus CPUs, leaving the rest for qemu
+                    virtiofsd_affinity = affinity[:-int(options.vcpus)]
+                    if len(virtiofsd_affinity) == 0:
+                        print("run.py: WARNING: can't satisfy strict affinity (not enough CPUs for "
+                            "virtiofsd, total CPUs {}".format(len(affinity)), file=sys.stderr)
+                    else:
+                        # Affinity is persistent across fork()
+                        os.sched_setaffinity(0, virtiofsd_affinity)
                 virtiofsd = psutil.Popen(virtiofsd_args, stdout=subprocess.DEVNULL,
                     stderr=subprocess.PIPE if "virtiofsd" in options.perf else subprocess.DEVNULL,
                     text=True, env=virtiofsd_env)
+                if options.isolcpus:
+                    # Restore affinity
+                    # TODO OPT: Do this, even if Popen() throws
+                    os.sched_setaffinity(0, affinity)
             except OSError as e:
                 if e.errno == errno.ENOENT:
                     print("virtiofsd binary not found. Please install the qemu-system-x86 package "
@@ -317,7 +331,20 @@ def start_osv_qemu(options):
         if "qemu" in options.perf:
             cmdline = ["perf", "stat", "--inherit", "-e", "task-clock", "--"] + cmdline
             qemu_env['LC_NUMERIC'] = 'C'
+        if options.isolcpus:
+            # Pin to last options.vcpus CPUs
+            qemu_affinity = affinity[-int(options.vcpus):]
+            if len(qemu_affinity) == 0:
+                print("run.py: WARNING: can't satisfy strict affinity (not enough CPUs for "
+                    "qemu, total CPUs {}".format(len(affinity)), file=sys.stderr)
+            else:
+                # Affinity is persistent across fork()
+                os.sched_setaffinity(0, qemu_affinity)
         qemu = psutil.Popen(cmdline, env=qemu_env)
+        if options.isolcpus:
+            # Restore affinity
+            # TODO OPT: After launching qemu, only run on non-qemu CPUs
+            os.sched_setaffinity(0, affinity)
     except OSError as e:
         if e.errno == errno.ENOENT:
             print("{} binary not found. Please install the qemu-system-x86 package.".
@@ -369,8 +396,21 @@ def start_osv_qemu(options):
                     perf_vhost_env['LC_NUMERIC'] = 'C'
                     perf_vhost_args = ["perf", "stat", "-e", "task-clock", "-p", str(vhost_pid)]
                     try:
+                        if options.isolcpus:
+                            # Pin to first N - options.vcpus CPUs, leaving the rest for qemu
+                            perf_vhost_affinity = affinity[:-int(options.vcpus)]
+                            if len(perf_vhost_affinity) == 0:
+                                print("run.py: WARNING: can't satisfy strict affinity (not enough "
+                                    "CPUs for vhost perf, total CPUs {}".format(len(affinity)),
+                                    file=sys.stderr)
+                            else:
+                                # Affinity is persistent across fork()
+                                os.sched_setaffinity(0, perf_vhost_affinity)
                         perf_vhost = subprocess.Popen(perf_vhost_args, stdout=subprocess.DEVNULL,
                             stderr=subprocess.PIPE, text=True, env=perf_vhost_env)
+                        if options.isolcpus:
+                            # Restore affinity
+                            os.sched_setaffinity(0, affinity)
                     except OSError as e:
                         if e.errno == errno.ENOENT:
                             print("perf binary not found. Please install the perf package.",
@@ -395,8 +435,21 @@ def start_osv_qemu(options):
                 perf_nfs_args = ["perf", "stat", "-e", "task-clock", "-p",
                     ','.join(str(p) for p in nfs_pids)]
                 try:
+                    if options.isolcpus:
+                        # Pin to first N - options.vcpus CPUs, leaving the rest for qemu
+                        perf_nfs_affinity = affinity[:-int(options.vcpus)]
+                        if len(perf_nfs_affinity) == 0:
+                            print("run.py: WARNING: can't satisfy strict affinity (not enough CPUs "
+                                "for nfs perf, total CPUs {}".format(len(affinity)),
+                                file=sys.stderr)
+                        else:
+                            # Affinity is persistent across fork()
+                            os.sched_setaffinity(0, perf_nfs_affinity)
                     perf_nfs = subprocess.Popen(perf_nfs_args, stdout=subprocess.DEVNULL,
                         stderr=subprocess.PIPE, text=True, env=perf_nfs_env)
+                    if options.isolcpus:
+                        # Restore affinity
+                        os.sched_setaffinity(0, affinity)
                 except OSError as e:
                     if e.errno == errno.ENOENT:
                         print("perf binary not found. Please install the perf package.",
@@ -411,8 +464,21 @@ def start_osv_qemu(options):
                 time.sleep(options.client_delay)
 
             try:
+                if options.isolcpus:
+                    # Pin to first N - options.vcpus CPUs, leaving the rest for qemu
+                    client_affinity = affinity[:-int(options.vcpus)]
+                    if len(client_affinity) == 0:
+                        print("run.py: WARNING: can't satisfy strict affinity (not enough CPUs for "
+                            "client, total CPUs {}".format(len(affinity)),
+                            file=sys.stderr)
+                    else:
+                        # Affinity is persistent across fork()
+                        os.sched_setaffinity(0, client_affinity)
                 client = subprocess.Popen(options.client_path, stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE, text=True)
+                if options.isolcpus:
+                    # Restore affinity
+                    os.sched_setaffinity(0, affinity)
             except OSError as e:
                 if e.errno == errno.ENOENT:
                     print("client executable \"{}\" not found".format(options.client_path),
@@ -818,6 +884,8 @@ if __name__ == "__main__":
                         help="path to client executable to run in parallel and kill qemu when it exits")
     parser.add_argument("--client-delay", action="store", default=0, type=float,
                         help="seconds to wait before launching client")
+    parser.add_argument("--isolcpus", action="store_true",
+                        help="isolate qemu from the rest on separate CPUs")
     cmdargs = parser.parse_args()
 
     cmdargs.opt_path = "debug" if cmdargs.debug else "release" if cmdargs.release else "last"
