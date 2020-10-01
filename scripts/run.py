@@ -267,6 +267,20 @@ def start_osv_qemu(options):
     for a in options.pass_args or []:
         args += a.split()
 
+    if options.disable_freq_scale:
+        try:
+            # TODO OPT: Read/write to /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+            # directly? Save and restore when done?
+            subprocess.run(["cpupower", "frequency-set", "-g", "performance"],
+                stdout=subprocess.DEVNULL)
+        except OSError as e:
+            if e.errno == errno.ENOENT:
+                print("cpupower binary not found. Please install the cpupower package",
+                    file=sys.stderr)
+            else:
+                print("OS error({0}): \"{1}\" while running cpupower".format(e.errno, e.strerror),
+                    file=sys.stderr)
+
     affinity = sorted(os.sched_getaffinity(0))  # CPUs available to us
     virtiofsd = None
     if options.virtio_fs_dir:
@@ -886,6 +900,8 @@ if __name__ == "__main__":
                         help="seconds to wait before launching client")
     parser.add_argument("--isolcpus", action="store_true",
                         help="isolate qemu from the rest on separate CPUs")
+    parser.add_argument("--disable-freq-scale", action="store_true",
+                        help="disable CPU frequency scaling")
     cmdargs = parser.parse_args()
 
     cmdargs.opt_path = "debug" if cmdargs.debug else "release" if cmdargs.release else "last"
