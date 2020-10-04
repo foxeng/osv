@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import subprocess
+import threading
 import sys
 import argparse
 import os
@@ -110,6 +111,23 @@ def is_direct_io_supported(path):
         if e.errno == errno.EINVAL:
             return False
         raise
+
+class MemUsage:
+    def __init__(self):
+        self.rss = 0
+        self.uss = 0
+
+def record_memu(p, t):
+    # TODO OPT: Add cancellation through a threading.Event, to allow monitoring long-running procs
+    while p.is_running():
+        tmp = p.memory_full_info()
+        t.rss = max(t.rss, tmp.rss)
+        t.uss = max(t.uss, tmp.uss)
+
+        time.sleep(0.1)
+
+def print_memu(id, t):
+    print("Memory usage stats for {}: {} {}".format(id, t.rss, t.uss), file=sys.stderr)
 
 def start_osv_qemu(options):
 
@@ -283,6 +301,7 @@ def start_osv_qemu(options):
 
     affinity = sorted(os.sched_getaffinity(0))  # CPUs available to us
     virtiofsd = None
+    virtiofsd_memu = None
     if options.virtio_fs_dir:
         virtiofsd_env = os.environ.copy()
         virtiofsd_args = ["virtiofsd", "--socket-path=/tmp/vhostqemu", "-o",
@@ -323,6 +342,36 @@ def start_osv_qemu(options):
                     print("OS error({0}): \"{1}\" while running virtiofsd {2}".
                         format(e.errno, e.strerror, " ".join(args)), file=sys.stderr)
                 return
+            else:
+                if "virtiofsd" in options.memu:
+                    if "virtiofsd" in options.perf:
+                        # Get the actual virtiofsd process (wrapped by perf)
+                        perf_children = virtiofsd.children()
+                        pcl = len(perf_children)
+                        if pcl == 0:
+                            # Wait once for perf to launch virtiofsd
+                            print("run.py: INFO: waiting for perf to launch virtiofsd",
+                                file=sys.stderr)
+                            time.sleep(0.05)
+                            perf_children = virtiofsd.children()
+                            pcl = len(perf_children)
+
+                        if pcl == 0:
+                            # Perf has yet to launch virtiofsd, warn and continue without it
+                            print("run.py: WARNING: missing virtiofsd memory usage (missing "
+                                "virtiofsd pid)", file=sys.stderr)
+                        else:
+                            virtiofsd_act = perf_children[0]    # actual virtiofsd process
+                            if pcl > 1:
+                                print("run.py: WARNING: perf has {} children, using the first one "
+                                    "(pid {}) arbitrarily as virtiofsd".format(pcl,
+                                    virtiofsd_act.pid), file=sys.stderr)
+                            virtiofsd_memu = MemUsage()
+                            threading.Timer(0.1, record_memu, (virtiofsd_act, virtiofsd_memu)) \
+                                .start()
+                    else:
+                        virtiofsd_memu = MemUsage()
+                        threading.Timer(0.1, record_memu, (virtiofsd, virtiofsd_memu)).start()
 
     qemu_env = os.environ.copy()
     qemu_env['OSV_BRIDGE'] = options.bridge
@@ -342,6 +391,7 @@ def start_osv_qemu(options):
         perf_vhost = None
         qemu = None
         qemu_act = None
+        qemu_memu = None
         if "qemu" in options.perf:
             cmdline = ["perf", "stat", "--inherit", "-e", "task-clock", "--"] + cmdline
             qemu_env['LC_NUMERIC'] = 'C'
@@ -432,6 +482,17 @@ def start_osv_qemu(options):
                         else:
                             print("OS error({}): \"{}\" while running {}".format(e.errno,
                                 e.strerror, " ".join(perf_vhost_args)), file=sys.stderr)
+
+        if "qemu" in options.memu:
+            # NOTE: Since qemu_act may be None even if "qemu" in options.perf, we check for both.
+            if "qemu" not in options.perf:
+                # Not using perf, so qemu is the actual qemu process
+                qemu_memu = MemUsage()
+                threading.Timer(0.1, record_memu, (qemu, qemu_memu)).start()
+            elif qemu_act is not None:
+                # Using perf and were able to find the actual qemu process
+                qemu_memu = MemUsage()
+                threading.Timer(0.1, record_memu, (qemu_act, qemu_memu)).start()
 
         if "nfs" in options.perf:
             nfs_pids = []   # nfsd kernel threads
@@ -548,6 +609,9 @@ def start_osv_qemu(options):
             if qemu.returncode != 0:
                 print("qemu failed.", file=sys.stderr)
 
+            if qemu_memu is not None:
+                print_memu("qemu", qemu_memu)
+
         # Clean up nfs perf (not expected to terminate)
         if perf_nfs is not None:
             # Normally, when running with '-p', perf prints and exits with SIGINT
@@ -593,6 +657,9 @@ def start_osv_qemu(options):
                     virtiofsd.wait(5)
                 except psutil.TimeoutExpired:
                     virtiofsd.kill()
+
+            if virtiofsd_memu is not None:
+                print_memu("virtiofsd", virtiofsd_memu)
 
 def start_osv_xen(options):
     if options.hypervisor == "xen":
@@ -902,6 +969,8 @@ if __name__ == "__main__":
                         help="isolate qemu from the rest on separate CPUs")
     parser.add_argument("--disable-freq-scale", action="store_true",
                         help="disable CPU frequency scaling")
+    parser.add_argument("--memu", action="append", default=[], choices=["qemu", "virtiofsd"],
+                        help="record subcommands' memory usage statistics")
     cmdargs = parser.parse_args()
 
     cmdargs.opt_path = "debug" if cmdargs.debug else "release" if cmdargs.release else "last"
