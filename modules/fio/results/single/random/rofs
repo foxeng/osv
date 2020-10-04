@@ -1,0 +1,275 @@
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 193.66 ms
+Cmdline: /usr/fio --readonly --minimal --directory /data --aux-path /data /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;599528;149882;1749;0;0;0.000000;0.000000;0;16734;6.322322;43.261615;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=1;90.000000%=27;95.000000%=38;99.000000%=68;99.500000%=92;99.900000%=216;99.950000%=301;99.990000%=1073;0%=0;0%=0;0%=0;0;16734;6.360481;43.262925;152344;557128;51.834109%;310760.000000;216250.288767;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.114416%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;81.17%;5.90%;0.09%;0.34%;10.09%;1.95%;0.39%;0.05%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           3937.58 msec task-clock                #    1.364 CPUs utilized          
+
+       2.887774502 seconds time elapsed
+
+       2.325915000 seconds user
+       1.778167000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch qemu
+run.py: INFO: waiting for vhost kernel thread to launch
+Memory usage stats for qemu: 2458460160 2449416192
+perf stat vhost:
+
+ Performance counter stats for process id '21697':
+
+              0.22 msec task-clock                #    0.000 CPUs utilized          
+
+       3.000383899 seconds time elapsed
+
+
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 170.34 ms
+Cmdline: /usr/fio --readonly --minimal --directory /data --aux-path /data /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;652505;163126;1607;0;0;0.000000;0.000000;0;20578;5.785006;55.754865;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=26;95.000000%=28;99.000000%=56;99.500000%=87;99.900000%=211;99.950000%=325;99.990000%=1073;0%=0;0%=0;0%=0;0;20578;5.822914;55.755877;156624;858232;66.315916%;432714.666667;373911.343702;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.186800%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;85.25%;1.81%;0.08%;0.36%;11.08%;1.00%;0.35%;0.02%;0.01%;0.02%;0.01%;0.00%;0.00%;0.01%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           3751.63 msec task-clock                #    1.454 CPUs utilized          
+
+       2.579833547 seconds time elapsed
+
+       2.452268000 seconds user
+       1.462817000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch qemu
+Memory usage stats for qemu: 2459127808 2450132992
+perf stat vhost:
+
+ Performance counter stats for process id '21736':
+
+              0.18 msec task-clock                #    0.000 CPUs utilized          
+
+       3.000360989 seconds time elapsed
+
+
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 177.55 ms
+Cmdline: /usr/fio --readonly --minimal --directory /data --aux-path /data /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;702328;175582;1493;0;0;0.000000;0.000000;0;6939;5.358130;25.230901;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=26;95.000000%=29;99.000000%=49;99.500000%=82;99.900000%=201;99.950000%=254;99.990000%=913;0%=0;0%=0;0%=0;0;6939;5.395107;25.232123;156056;318112;33.756877%;237084.000000;114590.896532;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.067024%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;86.58%;0.58%;0.07%;0.27%;11.50%;0.57%;0.37%;0.03%;0.01%;0.01%;0.01%;0.00%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           3949.39 msec task-clock                #    1.513 CPUs utilized          
+
+       2.609735292 seconds time elapsed
+
+       2.502117000 seconds user
+       1.622043000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch qemu
+Memory usage stats for qemu: 2459131904 2450067456
+perf stat vhost:
+
+ Performance counter stats for process id '21772':
+
+              0.14 msec task-clock                #    0.000 CPUs utilized          
+
+       3.000361839 seconds time elapsed
+
+
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 184.49 ms
+Cmdline: /usr/fio --readonly --minimal --directory /data --aux-path /data /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;740519;185129;1416;0;0;0.000000;0.000000;0;717;5.063761;16.169519;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=26;95.000000%=27;99.000000%=49;99.500000%=85;99.900000%=207;99.950000%=242;99.990000%=342;0%=0;0%=0;0%=0;0;717;5.101499;16.172178;157296;352952;34.452053%;255124.000000;138349.684380;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.141343%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;86.58%;0.59%;0.04%;0.29%;11.50%;0.58%;0.37%;0.04%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           3409.98 msec task-clock                #    1.394 CPUs utilized          
+
+       2.446582810 seconds time elapsed
+
+       2.307242000 seconds user
+       1.269511000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch qemu
+Memory usage stats for qemu: 2459951104 2451042304
+perf stat vhost:
+
+ Performance counter stats for process id '21808':
+
+              0.17 msec task-clock                #    0.000 CPUs utilized          
+
+       3.000384393 seconds time elapsed
+
+
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 177.16 ms
+Cmdline: /usr/fio --readonly --minimal --directory /data --aux-path /data /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;710898;177724;1475;0;0;0.000000;0.000000;0;17084;5.289157;45.773993;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=26;95.000000%=28;99.000000%=50;99.500000%=83;99.900000%=209;99.950000%=248;99.990000%=354;0%=0;0%=0;0%=0;0;17084;5.327081;45.775258;143112;307048;31.661364%;225080.000000;115920.257281;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.067843%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;86.63%;0.55%;0.02%;0.31%;11.48%;0.61%;0.36%;0.04%;0.01%;0.00%;0.00%;0.01%;0.01%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           3802.31 msec task-clock                #    1.534 CPUs utilized          
+
+       2.479406134 seconds time elapsed
+
+       2.514529000 seconds user
+       1.444587000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch qemu
+run.py: INFO: waiting for vhost kernel thread to launch
+Memory usage stats for qemu: 2459291648 2450182144
+perf stat vhost:
+
+ Performance counter stats for process id '21844':
+
+              0.18 msec task-clock                #    0.000 CPUs utilized          
+
+       3.000345953 seconds time elapsed
+
+
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 189.56 ms
+Cmdline: /usr/fio --readonly --minimal --directory /data --aux-path /data /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;741043;185260;1415;0;0;0.000000;0.000000;0;21041;5.052175;44.738877;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=26;95.000000%=27;99.000000%=44;99.500000%=71;99.900000%=189;99.950000%=236;99.990000%=362;0%=0;0%=0;0%=0;0;21041;5.089803;44.739500;171184;343080;34.698661%;257132.000000;121548.827259;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.212164%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;87.14%;0.01%;0.02%;0.33%;11.71%;0.45%;0.31%;0.02%;0.01%;0.01%;0.01%;0.00%;0.00%;0.00%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           3316.65 msec task-clock                #    1.332 CPUs utilized          
+
+       2.490021730 seconds time elapsed
+
+       2.212479000 seconds user
+       1.258996000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch qemu
+run.py: INFO: waiting for vhost kernel thread to launch
+Memory usage stats for qemu: 2461827072 2452639744
+perf stat vhost:
+
+ Performance counter stats for process id '21883':
+
+              0.18 msec task-clock                #    0.000 CPUs utilized          
+
+       3.000369130 seconds time elapsed
+
+
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 174.21 ms
+Cmdline: /usr/fio --readonly --minimal --directory /data --aux-path /data /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;746849;186712;1404;0;0;0.000000;0.000000;0;702;5.017890;15.646345;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=26;95.000000%=28;99.000000%=46;99.500000%=69;99.900000%=197;99.950000%=234;99.990000%=301;0%=0;0%=0;0%=0;0;702;5.055450;15.649729;153056;344248;33.293477%;248652.000000;135193.159709;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.142552%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;87.12%;0.01%;0.02%;0.36%;11.58%;0.55%;0.33%;0.03%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           3319.02 msec task-clock                #    1.357 CPUs utilized          
+
+       2.446667157 seconds time elapsed
+
+       2.233890000 seconds user
+       1.252173000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch qemu
+Memory usage stats for qemu: 2459209728 2450128896
+perf stat vhost:
+
+ Performance counter stats for process id '21919':
+
+              0.29 msec task-clock                #    0.000 CPUs utilized          
+
+       3.000386969 seconds time elapsed
+
+
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 177.67 ms
+Cmdline: /usr/fio --readonly --minimal --directory /data --aux-path /data /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;735842;183960;1425;0;0;0.000000;0.000000;0;5937;5.097938;24.329536;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=26;95.000000%=27;99.000000%=46;99.500000%=74;99.900000%=220;99.950000%=248;99.990000%=309;0%=0;0%=0;0%=0;0;5937;5.134314;24.331095;149040;337240;33.042419%;243140.000000;133077.496219;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.070225%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;87.11%;0.05%;0.04%;0.29%;11.59%;0.54%;0.33%;0.04%;0.01%;0.01%;0.00%;0.01%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           3492.73 msec task-clock                #    1.428 CPUs utilized          
+
+       2.446655795 seconds time elapsed
+
+       2.432561000 seconds user
+       1.224754000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch qemu
+Memory usage stats for qemu: 2461515776 2452406272
+perf stat vhost:
+
+ Performance counter stats for process id '21955':
+
+              0.20 msec task-clock                #    0.000 CPUs utilized          
+
+       3.000368450 seconds time elapsed
+
+
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 175.58 ms
+Cmdline: /usr/fio --readonly --minimal --directory /data --aux-path /data /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;759287;189821;1381;0;0;0.000000;0.000000;0;6975;4.934867;20.678939;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=26;95.000000%=27;99.000000%=44;99.500000%=75;99.900000%=193;99.950000%=238;99.990000%=301;0%=0;0%=0;0%=0;0;6975;4.971915;20.680740;170528;371600;35.699808%;271064.000000;142179.374707;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.000000%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;87.19%;0.01%;0.06%;0.25%;11.77%;0.34%;0.36%;0.03%;0.01%;0.00%;0.00%;0.00%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           3338.48 msec task-clock                #    1.284 CPUs utilized          
+
+       2.599714787 seconds time elapsed
+
+       2.183692000 seconds user
+       1.315273000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch qemu
+run.py: INFO: waiting for vhost kernel thread to launch
+Memory usage stats for qemu: 2461507584 2452369408
+perf stat vhost:
+
+ Performance counter stats for process id '21991':
+
+              0.15 msec task-clock                #    0.000 CPUs utilized          
+
+       3.000352410 seconds time elapsed
+
+
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 174.62 ms
+Cmdline: /usr/fio --readonly --minimal --directory /data --aux-path /data /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;748982;187245;1400;0;0;0.000000;0.000000;0;20362;5.006937;54.192307;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=26;95.000000%=28;99.000000%=43;99.500000%=66;99.900000%=189;99.950000%=226;99.990000%=301;0%=0;0%=0;0%=0;0;20362;5.043711;54.193229;154768;316240;31.443212%;235504.000000;114177.946172;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.071480%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;87.16%;0.01%;0.06%;0.28%;11.74%;0.42%;0.31%;0.02%;0.01%;0.00%;0.00%;0.00%;0.00%;0.01%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           3438.35 msec task-clock                #    1.347 CPUs utilized          
+
+       2.553042485 seconds time elapsed
+
+       2.311130000 seconds user
+       1.277610000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch qemu
+run.py: INFO: waiting for vhost kernel thread to launch
+Memory usage stats for qemu: 2461536256 2452492288
+perf stat vhost:
+
+ Performance counter stats for process id '22030':
+
+              0.20 msec task-clock                #    0.000 CPUs utilized          
+
+       3.000374987 seconds time elapsed
+
+

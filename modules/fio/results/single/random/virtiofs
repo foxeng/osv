@@ -1,0 +1,412 @@
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 238.64 ms
+Cmdline: /usr/fio --readonly --minimal --directory /virtiofs --aux-path /virtiofs /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;226719;56679;4625;0;0;0.000000;0.000000;14;19334;17.151909;39.519309;1.000000%=15;5.000000%=15;10.000000%=15;20.000000%=15;30.000000%=15;40.000000%=15;50.000000%=16;60.000000%=17;70.000000%=17;80.000000%=18;90.000000%=18;95.000000%=19;99.000000%=29;99.500000%=33;99.900000%=63;99.950000%=90;99.990000%=460;0%=0;0%=0;0%=0;14;19334;17.199484;39.519942;204248;234920;100.000000%;227074.666667;10319.991473;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.064879%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.00%;0.00%;0.00%;97.99%;1.86%;0.11%;0.02%;0.01%;0.01%;0.01%;0.01%;0.01%;0.00%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -chardev socket,id=char0,path=/tmp/vhostqemu -device vhost-user-fs-pci,queue-size=1024,chardev=char0,tag=myfs -object memory-backend-file,id=mem,size=4G,mem-path=/dev/shm,share=on -numa node,memdev=mem -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           7794.93 msec task-clock                #    1.253 CPUs utilized          
+
+       6.219139412 seconds time elapsed
+
+       6.783330000 seconds user
+       1.026038000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch virtiofsd
+run.py: INFO: waiting for perf to launch qemu
+Memory usage stats for qemu: 1244094464 1235070976
+perf stat vhost:
+
+ Performance counter stats for process id '22449':
+
+              0.19 msec task-clock                #    0.000 CPUs utilized          
+
+       6.000605456 seconds time elapsed
+
+
+
+ Performance counter stats for 'virtiofsd --socket-path=/tmp/vhostqemu -o source=/home/fotis/workspace/ram/guest -o cache=none --thread-pool-size=1':
+
+           3090.33 msec task-clock                #    0.487 CPUs utilized          
+
+       6.340699884 seconds time elapsed
+
+       1.667809000 seconds user
+       2.132543000 seconds sys
+
+
+
+Memory usage stats for virtiofsd: 1757184 618496
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 252.44 ms
+Cmdline: /usr/fio --readonly --minimal --directory /virtiofs --aux-path /virtiofs /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;227506;56876;4609;0;0;0.000000;0.000000;14;10264;17.067999;32.619673;1.000000%=15;5.000000%=15;10.000000%=15;20.000000%=15;30.000000%=15;40.000000%=15;50.000000%=15;60.000000%=17;70.000000%=17;80.000000%=18;90.000000%=18;95.000000%=19;99.000000%=22;99.500000%=31;99.900000%=52;99.950000%=81;99.990000%=544;0%=0;0%=0;0%=0;14;10264;17.114125;32.620259;208600;241488;99.985446%;227472.888889;12844.527827;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;399.978299%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.00%;0.00%;0.00%;98.31%;1.58%;0.07%;0.02%;0.01%;0.01%;0.01%;0.01%;0.00%;0.01%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -chardev socket,id=char0,path=/tmp/vhostqemu -device vhost-user-fs-pci,queue-size=1024,chardev=char0,tag=myfs -object memory-backend-file,id=mem,size=4G,mem-path=/dev/shm,share=on -numa node,memdev=mem -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           8087.41 msec task-clock                #    1.294 CPUs utilized          
+
+       6.249180564 seconds time elapsed
+
+       7.059663000 seconds user
+       1.042343000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch virtiofsd
+run.py: INFO: waiting for perf to launch qemu
+Memory usage stats for qemu: 1244196864 1235111936
+perf stat vhost:
+
+ Performance counter stats for process id '22501':
+
+              0.12 msec task-clock                #    0.000 CPUs utilized          
+
+       6.000464518 seconds time elapsed
+
+
+
+ Performance counter stats for 'virtiofsd --socket-path=/tmp/vhostqemu -o source=/home/fotis/workspace/ram/guest -o cache=none --thread-pool-size=1':
+
+           3027.50 msec task-clock                #    0.475 CPUs utilized          
+
+       6.370905002 seconds time elapsed
+
+       1.557759000 seconds user
+       2.178653000 seconds sys
+
+
+
+Memory usage stats for virtiofsd: 1630208 618496
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 235.31 ms
+Cmdline: /usr/fio --readonly --minimal --directory /virtiofs --aux-path /virtiofs /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;225209;56302;4656;0;0;0.000000;0.000000;14;22779;17.211846;45.141564;1.000000%=15;5.000000%=15;10.000000%=15;20.000000%=15;30.000000%=15;40.000000%=15;50.000000%=16;60.000000%=17;70.000000%=17;80.000000%=18;90.000000%=19;95.000000%=19;99.000000%=31;99.500000%=34;99.900000%=51;99.950000%=72;99.990000%=337;0%=0;0%=0;0%=0;14;22779;17.268176;45.148501;200240;245280;99.653803%;224429.333333;15129.175523;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.000000%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.00%;0.00%;0.00%;96.89%;2.99%;0.09%;0.02%;0.01%;0.01%;0.01%;0.01%;0.00%;0.00%;0.00%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -chardev socket,id=char0,path=/tmp/vhostqemu -device vhost-user-fs-pci,queue-size=1024,chardev=char0,tag=myfs -object memory-backend-file,id=mem,size=4G,mem-path=/dev/shm,share=on -numa node,memdev=mem -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           7274.34 msec task-clock                #    1.133 CPUs utilized          
+
+       6.422306045 seconds time elapsed
+
+       6.259093000 seconds user
+       1.030338000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch virtiofsd
+run.py: INFO: waiting for perf to launch qemu
+Memory usage stats for qemu: 1244323840 1235210240
+perf stat vhost:
+
+ Performance counter stats for process id '22550':
+
+              0.19 msec task-clock                #    0.000 CPUs utilized          
+
+       7.000789846 seconds time elapsed
+
+
+
+ Performance counter stats for 'virtiofsd --socket-path=/tmp/vhostqemu -o source=/home/fotis/workspace/ram/guest -o cache=none --thread-pool-size=1':
+
+           2996.56 msec task-clock                #    0.462 CPUs utilized          
+
+       6.481055620 seconds time elapsed
+
+       1.518921000 seconds user
+       2.192982000 seconds sys
+
+
+
+Memory usage stats for virtiofsd: 1695744 196608
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 247.57 ms
+Cmdline: /usr/fio --readonly --minimal --directory /virtiofs --aux-path /virtiofs /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;219965;54991;4767;0;0;0.000000;0.000000;14;20221;17.661849;82.526653;1.000000%=15;5.000000%=15;10.000000%=15;20.000000%=15;30.000000%=15;40.000000%=15;50.000000%=17;60.000000%=17;70.000000%=17;80.000000%=18;90.000000%=18;95.000000%=19;99.000000%=30;99.500000%=33;99.900000%=64;99.950000%=95;99.990000%=444;0%=0;0%=0;0%=0;14;20221;17.712295;82.527135;205456;234296;100.000000%;220711.111111;9111.034580;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.020982%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.00%;0.00%;0.00%;97.95%;1.89%;0.11%;0.03%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -chardev socket,id=char0,path=/tmp/vhostqemu -device vhost-user-fs-pci,queue-size=1024,chardev=char0,tag=myfs -object memory-backend-file,id=mem,size=4G,mem-path=/dev/shm,share=on -numa node,memdev=mem -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           8439.74 msec task-clock                #    1.298 CPUs utilized          
+
+       6.502158296 seconds time elapsed
+
+       7.413125000 seconds user
+       1.043206000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch virtiofsd
+run.py: INFO: waiting for perf to launch qemu
+run.py: INFO: waiting for vhost kernel thread to launch
+Memory usage stats for qemu: 1243074560 1233629184
+perf stat vhost:
+
+ Performance counter stats for process id '22602':
+
+              0.25 msec task-clock                #    0.000 CPUs utilized          
+
+       7.000862659 seconds time elapsed
+
+
+
+ Performance counter stats for 'virtiofsd --socket-path=/tmp/vhostqemu -o source=/home/fotis/workspace/ram/guest -o cache=none --thread-pool-size=1':
+
+           3098.15 msec task-clock                #    0.469 CPUs utilized          
+
+       6.605119435 seconds time elapsed
+
+       1.519922000 seconds user
+       2.280131000 seconds sys
+
+
+
+Memory usage stats for virtiofsd: 1691648 647168
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 239.15 ms
+Cmdline: /usr/fio --readonly --minimal --directory /virtiofs --aux-path /virtiofs /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;222722;55680;4708;0;0;0.000000;0.000000;14;20802;17.433124;47.318872;1.000000%=15;5.000000%=15;10.000000%=15;20.000000%=15;30.000000%=15;40.000000%=15;50.000000%=17;60.000000%=17;70.000000%=17;80.000000%=18;90.000000%=18;95.000000%=19;99.000000%=30;99.500000%=33;99.900000%=61;99.950000%=84;99.990000%=399;0%=0;0%=0;0%=0;14;20802;17.485748;47.319682;210024;232320;100.000000%;223798.222222;6912.100437;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.021245%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.00%;0.00%;0.00%;97.77%;2.09%;0.10%;0.02%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -chardev socket,id=char0,path=/tmp/vhostqemu -device vhost-user-fs-pci,queue-size=1024,chardev=char0,tag=myfs -object memory-backend-file,id=mem,size=4G,mem-path=/dev/shm,share=on -numa node,memdev=mem -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           7710.94 msec task-clock                #    1.183 CPUs utilized          
+
+       6.519048846 seconds time elapsed
+
+       6.637141000 seconds user
+       1.085565000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch virtiofsd
+run.py: INFO: waiting for perf to launch qemu
+Memory usage stats for qemu: 1243856896 1234804736
+perf stat vhost:
+
+ Performance counter stats for process id '22651':
+
+              0.27 msec task-clock                #    0.000 CPUs utilized          
+
+       7.000794774 seconds time elapsed
+
+
+
+ Performance counter stats for 'virtiofsd --socket-path=/tmp/vhostqemu -o source=/home/fotis/workspace/ram/guest -o cache=none --thread-pool-size=1':
+
+           3116.22 msec task-clock                #    0.470 CPUs utilized          
+
+       6.634194367 seconds time elapsed
+
+       1.574972000 seconds user
+       2.268103000 seconds sys
+
+
+
+Memory usage stats for virtiofsd: 1691648 643072
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 229.53 ms
+Cmdline: /usr/fio --readonly --minimal --directory /virtiofs --aux-path /virtiofs /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;224438;56109;4672;0;0;0.000000;0.000000;14;16427;17.327962;37.930330;1.000000%=15;5.000000%=15;10.000000%=15;20.000000%=15;30.000000%=15;40.000000%=15;50.000000%=17;60.000000%=17;70.000000%=17;80.000000%=17;90.000000%=18;95.000000%=19;99.000000%=29;99.500000%=33;99.900000%=60;99.950000%=84;99.990000%=643;0%=0;0%=0;0%=0;14;16427;17.375364;37.930852;197896;240344;100.000000%;224783.111111;13314.497629;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.021409%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.00%;0.00%;0.00%;97.80%;2.06%;0.10%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -chardev socket,id=char0,path=/tmp/vhostqemu -device vhost-user-fs-pci,queue-size=1024,chardev=char0,tag=myfs -object memory-backend-file,id=mem,size=4G,mem-path=/dev/shm,share=on -numa node,memdev=mem -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           8165.33 msec task-clock                #    1.266 CPUs utilized          
+
+       6.449206930 seconds time elapsed
+
+       7.121517000 seconds user
+       1.061040000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch virtiofsd
+run.py: INFO: waiting for perf to launch qemu
+Memory usage stats for qemu: 1244176384 1235165184
+perf stat vhost:
+
+ Performance counter stats for process id '22703':
+
+              0.30 msec task-clock                #    0.000 CPUs utilized          
+
+       7.000792684 seconds time elapsed
+
+
+
+ Performance counter stats for 'virtiofsd --socket-path=/tmp/vhostqemu -o source=/home/fotis/workspace/ram/guest -o cache=none --thread-pool-size=1':
+
+           3100.32 msec task-clock                #    0.472 CPUs utilized          
+
+       6.570549329 seconds time elapsed
+
+       1.670413000 seconds user
+       2.163134000 seconds sys
+
+
+
+Memory usage stats for virtiofsd: 1634304 618496
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 211.87 ms
+Cmdline: /usr/fio --readonly --minimal --directory /virtiofs --aux-path /virtiofs /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;215623;53905;4863;0;0;0.000000;0.000000;14;5684;17.955716;19.117268;1.000000%=15;5.000000%=15;10.000000%=15;20.000000%=15;30.000000%=17;40.000000%=17;50.000000%=17;60.000000%=17;70.000000%=18;80.000000%=18;90.000000%=19;95.000000%=19;99.000000%=31;99.500000%=35;99.900000%=64;99.950000%=92;99.990000%=667;0%=0;0%=0;0%=0;14;5684;18.014620;19.118992;205976;236632;100.000000%;215937.777778;9857.609266;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.020568%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.00%;0.00%;0.00%;96.57%;3.25%;0.13%;0.02%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -chardev socket,id=char0,path=/tmp/vhostqemu -device vhost-user-fs-pci,queue-size=1024,chardev=char0,tag=myfs -object memory-backend-file,id=mem,size=4G,mem-path=/dev/shm,share=on -numa node,memdev=mem -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           8220.91 msec task-clock                #    1.277 CPUs utilized          
+
+       6.436023601 seconds time elapsed
+
+       7.238515000 seconds user
+       0.998166000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch virtiofsd
+run.py: INFO: waiting for perf to launch qemu
+Memory usage stats for qemu: 1244876800 1235705856
+perf stat vhost:
+
+ Performance counter stats for process id '22752':
+
+              0.12 msec task-clock                #    0.000 CPUs utilized          
+
+       7.000677868 seconds time elapsed
+
+
+
+ Performance counter stats for 'virtiofsd --socket-path=/tmp/vhostqemu -o source=/home/fotis/workspace/ram/guest -o cache=none --thread-pool-size=1':
+
+           3223.99 msec task-clock                #    0.492 CPUs utilized          
+
+       6.551260377 seconds time elapsed
+
+       1.589861000 seconds user
+       2.338671000 seconds sys
+
+
+
+Memory usage stats for virtiofsd: 1687552 638976
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 219.34 ms
+Cmdline: /usr/fio --readonly --minimal --directory /virtiofs --aux-path /virtiofs /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;216692;54173;4839;0;0;0.000000;0.000000;14;18212;17.871374;43.318166;1.000000%=15;5.000000%=15;10.000000%=15;20.000000%=15;30.000000%=15;40.000000%=17;50.000000%=17;60.000000%=17;70.000000%=18;80.000000%=18;90.000000%=19;95.000000%=19;99.000000%=31;99.500000%=35;99.900000%=63;99.950000%=88;99.990000%=618;0%=0;0%=0;0%=0;14;18212;17.927615;43.318928;199488;237080;99.985438%;216660.444444;11807.022393;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.000000%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.00%;0.00%;0.00%;97.14%;2.70%;0.12%;0.02%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -chardev socket,id=char0,path=/tmp/vhostqemu -device vhost-user-fs-pci,queue-size=1024,chardev=char0,tag=myfs -object memory-backend-file,id=mem,size=4G,mem-path=/dev/shm,share=on -numa node,memdev=mem -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           8434.97 msec task-clock                #    1.303 CPUs utilized          
+
+       6.472631648 seconds time elapsed
+
+       7.341498000 seconds user
+       1.110561000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch virtiofsd
+run.py: INFO: waiting for perf to launch qemu
+Memory usage stats for qemu: 1244254208 1235304448
+perf stat vhost:
+
+ Performance counter stats for process id '22805':
+
+              0.18 msec task-clock                #    0.000 CPUs utilized          
+
+       7.000657355 seconds time elapsed
+
+
+
+ Performance counter stats for 'virtiofsd --socket-path=/tmp/vhostqemu -o source=/home/fotis/workspace/ram/guest -o cache=none --thread-pool-size=1':
+
+           3179.80 msec task-clock                #    0.483 CPUs utilized          
+
+       6.581600562 seconds time elapsed
+
+       1.713993000 seconds user
+       2.190109000 seconds sys
+
+
+
+Memory usage stats for virtiofsd: 1634304 184320
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 232.55 ms
+Cmdline: /usr/fio --readonly --minimal --directory /virtiofs --aux-path /virtiofs /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;225161;56290;4657;0;0;0.000000;0.000000;14;13392;17.266096;39.809542;1.000000%=15;5.000000%=15;10.000000%=15;20.000000%=15;30.000000%=15;40.000000%=15;50.000000%=16;60.000000%=17;70.000000%=17;80.000000%=17;90.000000%=18;95.000000%=19;99.000000%=28;99.500000%=32;99.900000%=60;99.950000%=92;99.990000%=634;0%=0;0%=0;0%=0;14;13392;17.314202;39.810142;208728;243536;99.681759%;224444.444444;10884.959981;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.064433%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.00%;0.00%;0.00%;98.01%;1.87%;0.09%;0.02%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -chardev socket,id=char0,path=/tmp/vhostqemu -device vhost-user-fs-pci,queue-size=1024,chardev=char0,tag=myfs -object memory-backend-file,id=mem,size=4G,mem-path=/dev/shm,share=on -numa node,memdev=mem -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           8207.86 msec task-clock                #    1.268 CPUs utilized          
+
+       6.472757923 seconds time elapsed
+
+       7.115529000 seconds user
+       1.107417000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch virtiofsd
+run.py: INFO: waiting for perf to launch qemu
+run.py: INFO: waiting for vhost kernel thread to launch
+Memory usage stats for qemu: 1244094464 1234931712
+perf stat vhost:
+
+ Performance counter stats for process id '22854':
+
+              0.19 msec task-clock                #    0.000 CPUs utilized          
+
+       7.000795190 seconds time elapsed
+
+
+
+ Performance counter stats for 'virtiofsd --socket-path=/tmp/vhostqemu -o source=/home/fotis/workspace/ram/guest -o cache=none --thread-pool-size=1':
+
+           3092.67 msec task-clock                #    0.469 CPUs utilized          
+
+       6.591544726 seconds time elapsed
+
+       1.608825000 seconds user
+       2.198975000 seconds sys
+
+
+
+Memory usage stats for virtiofsd: 1757184 622592
+OSv v0.54.0-324-gf622d55c
+eth0: 192.168.122.15
+Booted up in 240.43 ms
+Cmdline: /usr/fio --readonly --minimal --directory /virtiofs --aux-path /virtiofs /tests/single-read-random.fio
+3;fio-3.23;random;0;0;1048576;223767;55941;4686;0;0;0.000000;0.000000;14;17055;17.375178;34.943102;1.000000%=15;5.000000%=15;10.000000%=15;20.000000%=15;30.000000%=15;40.000000%=16;50.000000%=17;60.000000%=17;70.000000%=17;80.000000%=18;90.000000%=19;95.000000%=19;99.000000%=28;99.500000%=32;99.900000%=61;99.950000%=84;99.990000%=358;0%=0;0%=0;0%=0;14;17055;17.421863;34.943664;202208;235584;100.000000%;223853.333333;9244.795292;0;0;0;0;0;0;0.000000;0.000000;0;0;0.000000;0.000000;1.000000%=0;5.000000%=0;10.000000%=0;20.000000%=0;30.000000%=0;40.000000%=0;50.000000%=0;60.000000%=0;70.000000%=0;80.000000%=0;90.000000%=0;95.000000%=0;99.000000%=0;99.500000%=0;99.900000%=0;99.950000%=0;99.990000%=0;0%=0;0%=0;0%=0;0;0;0.000000;0.000000;0;0;0.000000%;0.000000;0.000000;400.000000%;0.000000%;0;0;0;100.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.0%;0.00%;0.00%;0.00%;98.04%;1.82%;0.10%;0.02%;0.01%;0.01%;0.01%;0.01%;0.01%;0.00%;0.01%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%;0.00%
+
+ Performance counter stats for '/home/fotis/workspace/qemu/build/x86_64-softmmu/qemu-system-x86_64 -m 4G -smp 4 -vnc :1 -gdb tcp::1234,server,nowait -device virtio-blk-pci,id=blk0,drive=hd0,scsi=off,bootindex=0 -drive file=/home/fotis/workspace/ram/img/usr.img,if=none,id=hd0,cache=unsafe,aio=threads -chardev socket,id=char0,path=/tmp/vhostqemu -device vhost-user-fs-pci,queue-size=1024,chardev=char0,tag=myfs -object memory-backend-file,id=mem,size=4G,mem-path=/dev/shm,share=on -numa node,memdev=mem -netdev tap,id=hn0,br=br0,helper=/lib/qemu/qemu-bridge-helper,vhost=on -device virtio-net-pci,netdev=hn0,id=nic0 -device virtio-rng-pci -enable-kvm -cpu host,+x2apic -chardev stdio,mux=on,id=stdio,signal=off -mon chardev=stdio,mode=readline -device isa-serial,chardev=stdio':
+
+           8926.05 msec task-clock                #    1.399 CPUs utilized          
+
+       6.382440879 seconds time elapsed
+
+       7.957997000 seconds user
+       0.981295000 seconds sys
+
+
+run.py: INFO: waiting for perf to launch virtiofsd
+run.py: INFO: waiting for perf to launch qemu
+Memory usage stats for qemu: 1243979776 1234993152
+perf stat vhost:
+
+ Performance counter stats for process id '22907':
+
+              0.23 msec task-clock                #    0.000 CPUs utilized          
+
+       7.000758215 seconds time elapsed
+
+
+
+ Performance counter stats for 'virtiofsd --socket-path=/tmp/vhostqemu -o source=/home/fotis/workspace/ram/guest -o cache=none --thread-pool-size=1':
+
+           3029.46 msec task-clock                #    0.470 CPUs utilized          
+
+       6.441023212 seconds time elapsed
+
+       1.542658000 seconds user
+       2.225071000 seconds sys
+
+
+
+Memory usage stats for virtiofsd: 1687552 221184
